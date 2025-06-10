@@ -1,0 +1,24 @@
+[
+ {
+  "docstatus": 0,
+  "doctype": "CRM Form Script",
+  "dt": "CRM Deal",
+  "enabled": 1,
+  "is_standard": 0,
+  "modified": "2025-06-10 11:03:00.731748",
+  "name": "Deal Report",
+  "script": "function setupList() {\n    return {\n        actions: [\n            {\n                label: \"Deal Report\",\n                onClick: () => {\n                    const reportUrl = window.location.origin + \"/app/query-report/CRM%20Deal\";\n                    window.open(reportUrl, \"_blank\");\n                }\n            }\n        ]\n    };\n}\n",
+  "view": "List"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "CRM Form Script",
+  "dt": "CRM Lead",
+  "enabled": 1,
+  "is_standard": 0,
+  "modified": "2025-06-10 10:58:27.346343",
+  "name": "Lead Report",
+  "script": "function setupList() {\n    return {\n        actions: [\n            {\n                label: \"Lead Report\",\n                onClick: () => {\n                    const reportUrl = window.location.origin + \"/app/query-report/CRM%20Lead\";\n                    window.open(reportUrl, \"_blank\");\n                }\n            }\n        ]\n    };\n}\n",
+  "view": "List"
+ }
+]

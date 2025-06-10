@@ -310,3 +310,11 @@ standard_dropdown_items = [
 		"is_standard": 1,
 	},
 ]
+fixtures = [
+    {
+        "dt": "CRM Form Script",
+        "filters": [
+            ["name", "in", ["Deal Report", "Lead Report"]]
+        ]
+    }
+]
