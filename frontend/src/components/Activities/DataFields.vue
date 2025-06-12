@@ -44,7 +44,7 @@
 
   <div v-else class="pb-8 relative">
     <nav class="flex border-b mb-4 space-x-4">
-      <button
+      <buttongit 
         v-for="tab in filteredTabs"
         :key="tab.label"
         @click="activeTabLabel = tab.label"
@@ -55,7 +55,7 @@
             : 'text-gray-600 hover:text-gray-900',
         ]"
       >
-        {{ tab.label }}
+        {{ tab.label }}  
       </button>
     </nav>
     <FieldLayout
@@ -215,15 +215,18 @@ async function approveSpecialPrice() {
   const specialDiscount = document.doc.special_discount;
 
   if (document.doc.products && Array.isArray(document.doc.products)) {
+    let NetTotal = 0;
     for (const product of document.doc.products) {
       product.discount_percentage = specialDiscount;
+      product.net_amount = product.amount * (1 - specialDiscount / 100);
+      NetTotal += product.net_amount;
     }
+    document.doc.net_total = NetTotal;
     await document.save.submit();
   }
-await document.reload();
-tabs.reload();
+  await document.reload();
+  tabs.reload();
 }
-
 </script>
 
 <style scoped>
