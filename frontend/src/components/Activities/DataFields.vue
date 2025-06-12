@@ -26,7 +26,7 @@
         @click="saveChanges"
       />
       <Button
-        v-if="doctype === 'CRM Deal' && !hasRequestedSpecialPrice"
+        v-if="doctype === 'CRM Deal' && !showingSpecialPriceTab"
         label="Special Price"
         variant="solid"
         @click="showRequestDialog = true"
@@ -44,7 +44,8 @@
 
   <div v-else class="pb-8 relative">
     <nav class="flex border-b mb-4 space-x-4">
-      <buttongit 
+      <button
+
         v-for="tab in filteredTabs"
         :key="tab.label"
         @click="activeTabLabel = tab.label"
@@ -173,6 +174,10 @@ const filteredTabs = computed(() => {
   return tabs.data.filter(tab => tab.label !== 'Special Price Request')
   
 })
+const showingSpecialPriceTab = computed(() => {
+  return filteredTabs.value.some(tab => tab.label === 'Special Price Request');
+});
+
 
 
 watch(
@@ -201,6 +206,7 @@ async function submitSpecialPrice() {
   }
 
   await document.save.submit()
+  await document.reload
 
   hasRequestedSpecialPrice.value = true
   showRequestDialog.value = false
