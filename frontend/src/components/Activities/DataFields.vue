@@ -45,7 +45,6 @@
   <div v-else class="pb-8 relative">
     <nav class="flex border-b mb-4 space-x-4">
       <button
-
         v-for="tab in filteredTabs"
         :key="tab.label"
         @click="activeTabLabel = tab.label"
@@ -56,15 +55,28 @@
             : 'text-gray-600 hover:text-gray-900',
         ]"
       >
-        {{ tab.label }}  
+        {{ tab.label }}
       </button>
     </nav>
+
+    <div
+      v-if="activeTabLabel === 'Meeting'"
+      class="mt-4 flex justify-end"
+    >
+      <Button
+        label="Add Task"
+        variant="solid"
+        @click="showAddTaskDialog = true"
+      />
+    </div>
+
     <FieldLayout
       v-if="tabs.data && document.doc"
       :tabs="filteredTabs.filter(tab => tab.label === activeTabLabel)"
       :data="document.doc"
       :doctype="doctype"
     />
+
     <div
       v-if="doctype === 'CRM Deal' && activeTabLabel === 'Special Price Request' && isManager()"
       class="sticky bottom-0 left-0 right-0 bg-white border-t px-4 py-3 flex justify-end gap-2"
@@ -77,18 +89,15 @@
     </div>
   </div>
 
+  <!-- Data Fields Modal -->
   <DataFieldsModal
     v-if="showDataFieldsModal"
     v-model="showDataFieldsModal"
     :doctype="doctype"
-    @reload="
-      () => {
-        tabs.reload()
-        document.reload()
-      }
-    "
+    @reload="() => { tabs.reload(); document.reload(); }"
   />
 
+  <!-- Special Price Dialog -->
   <Dialog 
     v-if="doctype === 'CRM Deal'"
     v-model="showRequestDialog"
@@ -110,25 +119,55 @@
           :doctype="doctype"
         />
       </div>
-     
+
       <div class="sticky bottom-0 left-0 right-0 z-10 bg-white border-t px-4 py-3 flex justify-end gap-2">
         <Button variant="ghost" label="Cancel" @click="showRequestDialog = false" />
         <Button variant="solid" label="Request" @click="submitSpecialPrice" />
       </div>
     </template>
   </Dialog>
-</template>
 
+  <!-- Add Task Dialog -->
+  <Dialog 
+    v-model="showAddTaskDialog"
+    :options="{ size: '2xl' }"
+  >
+    <template #body>
+      <div class="sticky top-0 z-10 bg-white border-b px-4 pt-4 pb-2">
+        <div class="text-lg font-semibold text-gray-800">
+          {{ __('Add Task') }}
+        </div>
+      </div>
+
+      <div class="max-h-[70vh] overflow-y-auto px-4 pb-4">
+        <FieldLayout
+          v-if="taskLayout.data && newTask"
+          :tabs="taskLayout.data"
+          :data="newTask"
+          :doctype="'CRM Task'"
+        />
+        <div v-else class="text-red-600">Unable to load task fields</div>
+      </div>
+
+      <div class="sticky bottom-0 left-0 right-0 z-10 bg-white border-t px-4 py-3 flex justify-end gap-2">
+        <Button variant="ghost" label="Cancel" @click="showAddTaskDialog = false" />
+        <Button variant="solid" label="Create Task" @click="submitNewTask" />
+      </div>
+    </template>
+  </Dialog>
+</template>
 <script setup>
 import EditIcon from '@/components/Icons/EditIcon.vue'
 import DataFieldsModal from '@/components/Modals/DataFieldsModal.vue'
 import FieldLayout from '@/components/FieldLayout/FieldLayout.vue'
-import { Badge, createResource } from 'frappe-ui'
 import LoadingIndicator from '@/components/Icons/LoadingIndicator.vue'
-import { usersStore } from '@/stores/users'
+import { Badge, createResource } from 'frappe-ui'
 import { useDocument } from '@/data/document'
+import { usersStore } from '@/stores/users'
 import { isMobileView } from '@/composables/settings'
 import { ref, watch, computed } from 'vue'
+
+const frappe = window.frappe
 
 const props = defineProps({
   doctype: { type: String, required: true },
@@ -139,11 +178,10 @@ const { isManager } = usersStore()
 
 const showDataFieldsModal = ref(false)
 const showRequestDialog = ref(false)
+const showAddTaskDialog = ref(false)
+
 const hasRequestedSpecialPrice = ref(false)
-
-
 const activeTabLabel = ref('')
-
 
 const { document } = useDocument(props.doctype, props.docname)
 
@@ -167,18 +205,14 @@ watch(
 const filteredTabs = computed(() => {
   if (!tabs.data) return []
   if (props.doctype !== 'CRM Deal') return tabs.data
-
   if (hasRequestedSpecialPrice.value) return tabs.data
   if (document.doc && document.doc.status === 'Request For Special Price') return tabs.data
-
   return tabs.data.filter(tab => tab.label !== 'Special Price Request')
-  
 })
+
 const showingSpecialPriceTab = computed(() => {
-  return filteredTabs.value.some(tab => tab.label === 'Special Price Request');
-});
-
-
+  return filteredTabs.value.some(tab => tab.label === 'Special Price Request')
+})
 
 watch(
   filteredTabs,
@@ -190,12 +224,9 @@ watch(
   { immediate: true }
 )
 
-
-
 function saveChanges() {
   document.save.submit()
 }
-
 
 async function submitSpecialPrice() {
   if (props.doctype === 'CRM Deal') {
@@ -206,35 +237,87 @@ async function submitSpecialPrice() {
   }
 
   await document.save.submit()
-  await document.reload
+  await document.reload()
 
   hasRequestedSpecialPrice.value = true
   showRequestDialog.value = false
-
   tabs.reload()
 }
 
-
 async function approveSpecialPrice() {
-  alert('Approved this special price request');
+  alert('Approved this special price request')
 
-  const specialDiscount = document.doc.special_discount;
+  const specialDiscount = document.doc.special_discount
 
-  if (document.doc.products && Array.isArray(document.doc.products)) {
-    let NetTotal = 0;
+  if (Array.isArray(document.doc.products)) {
+    let NetTotal = 0
     for (const product of document.doc.products) {
-      product.discount_percentage = specialDiscount;
-      product.net_amount = product.amount * (1 - specialDiscount / 100);
-      NetTotal += product.net_amount;
+      product.discount_percentage = specialDiscount
+      product.net_amount = product.amount * (1 - specialDiscount / 100)
+      NetTotal += product.net_amount
     }
-    document.doc.net_total = NetTotal;
-    await document.save.submit();
+    document.doc.net_total = NetTotal
+    await document.save.submit()
   }
-  await document.reload();
-  tabs.reload();
-}
-</script>
 
+  await document.reload()
+  tabs.reload()
+}
+
+// 🔽 Add Task Logic
+const newTask = ref({
+  doctype: 'CRM Task',
+  status: 'Open',
+  priority: 'Medium',
+  reference_doctype: props.doctype,
+  reference_docname: props.docname,
+  reference_meet: ''
+})
+
+// Pre-fill reference_meet when dialog opens
+watch(showAddTaskDialog, (val) => {
+  if (val && Array.isArray(document.doc.meeting) && document.doc.meeting.length > 0) {
+    const lastMeetingRow = document.doc.meeting[document.doc.meeting.length - 1]
+    newTask.value.reference_meet = lastMeetingRow.meeting
+  }
+})
+
+// Fetch task field layout
+const taskLayout = createResource({
+  url: 'crm.fcrm.doctype.crm_fields_layout.crm_fields_layout.get_fields_layout',
+  cache: ['DataFields', 'CRM Task'],
+  params: { doctype: 'CRM Task', type: 'Data Fields' },
+  auto: true,
+})
+
+async function submitNewTask() {
+  try {
+    const response = await frappe.call('crm.api.task.create_crm_task', {
+      data: JSON.stringify(newTask.value)
+    });
+
+    if (response.message.success) {
+      console.log('✅ Task Created:', response.message.name)
+      showAddTaskDialog.value = false
+
+      newTask.value = {
+        doctype: 'CRM Task',
+        status: 'Open',
+        priority: 'Medium',
+        reference_doctype: props.doctype,
+        reference_docname: props.docname,
+        reference_meet: ''
+      }
+    } else {
+      console.error('❌ Error creating task:', response.message.error)
+    }
+  } catch (e) {
+    console.error('❌ Task creation failed:', e)
+  }
+}
+
+
+</script>
 <style scoped>
 
 nav button {

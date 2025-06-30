@@ -31,6 +31,16 @@ class CRMLead(Document):
 	def after_insert(self):
 		if self.lead_owner:
 			self.assign_agent(self.lead_owner)
+			contact_name = self.create_contact(existing_contact=None, throw=False)
+			full_name = " ".join(filter(None, [self.salutation, self.first_name, self.last_name]))
+
+			self.append("contacts", {
+			"contact": contact_name,
+			"full_name": full_name,
+			"email": self.email,
+			"mobile_no": self.mobile_no
+		})
+			self.save()
 
 	def before_save(self):
 		self.apply_sla()
@@ -399,21 +409,29 @@ class CRMLead(Document):
 			"kanban_fields": '["organization", "email", "mobile_no", "_assign", "modified"]',
 		}
 
-
 @frappe.whitelist()
-def convert_to_deal(lead, doc=None, deal=None, existing_contact=None, existing_organization=None):
+def convert_to_deal(lead, doc=None, deal=None, existing_organization=None):
 	if not (doc and doc.flags.get("ignore_permissions")) and not frappe.has_permission(
 		"CRM Lead", "write", lead
 	):
 		frappe.throw(_("Not allowed to convert Lead to Deal"), frappe.PermissionError)
-
-	lead = frappe.get_cached_doc("CRM Lead", lead)
+	lead = frappe.get_doc("CRM Lead", lead)
 	if frappe.db.exists("CRM Lead Status", "Qualified"):
 		lead.db_set("status", "Qualified")
 	lead.db_set("converted", 0)
 	if lead.sla and frappe.db.exists("CRM Communication Status", "Replied"):
 		lead.db_set("communication_status", "Replied")
-	contact = lead.create_contact(existing_contact, False)
 	organization = lead.create_organization(existing_organization)
-	_deal = lead.create_deal(contact, organization, deal)
-	return _deal
+	deal_name = lead.create_deal(None, organization, deal)
+	deal_doc = frappe.get_doc("CRM Deal", deal_name)
+	deal_doc.set("contacts", [])
+	for contact_row in lead.contacts:
+		deal_doc.append("contacts", {
+			"full_name": contact_row.full_name,
+			"email": contact_row.email,
+			"mobile_no": contact_row.mobile_no,
+			"contact": contact_row.contact  #
+		})
+	deal_doc.save(ignore_permissions=True)
+
+	return deal_name

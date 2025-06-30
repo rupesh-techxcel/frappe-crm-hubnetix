@@ -16,6 +16,9 @@
   "status",
   "close_date",
   "deal_owner",
+  "branch",
+  "executive",
+  "business_partner",
   "contacts_tab",
   "contacts",
   "contact",
@@ -61,7 +64,33 @@
   "first_response_time",
   "first_responded_on",
   "log_tab",
-  "status_change_log"
+  "status_change_log",
+  "sprf_tab",
+  "projectend_user_complete_details_section",
+  "end_user_name",
+  "contact_name",
+  "column_break_eeeo",
+  "phone_number",
+  "email_enduser",
+  "other_details_section",
+  "project_name",
+  "deal_value_in_local_currency",
+  "column_break_aqjt",
+  "tenderproject",
+  "closing_date",
+  "column_break_eshf",
+  "probability_of_winning",
+  "competitors",
+  "special_discount",
+  "section_break_ombb",
+  "justification_for_special_price_request",
+  "business_partner_tab",
+  "business_partner_details_section",
+  "business_partner_name",
+  "business_partner_contact_person",
+  "business_partner_contact_number",
+  "country",
+  "region"
  ],
  "fields": [
   {
@@ -228,7 +257,7 @@
   {
    "fieldname": "source",
    "fieldtype": "Link",
-   "label": "Source",
+   "label": "Lead Source",
    "options": "CRM Lead Source"
   },
   {
@@ -336,6 +365,7 @@
    "options": "Contact"
   },
   {
+   "default": "USD",
    "fieldname": "currency",
    "fieldtype": "Link",
    "label": "Currency",
@@ -374,12 +404,157 @@
    "label": "Net Total",
    "options": "currency",
    "read_only": 1
+  },
+  {
+   "fieldname": "branch",
+   "fieldtype": "Link",
+   "label": "Branch",
+   "options": "Branches"
+  },
+  {
+   "fieldname": "executive",
+   "fieldtype": "Link",
+   "label": "Executive",
+   "options": "Executive"
+  },
+  {
+   "fieldname": "business_partner",
+   "fieldtype": "Link",
+   "label": "Business Partner",
+   "options": "Business Partner"
+  },
+  {
+   "fieldname": "sprf_tab",
+   "fieldtype": "Tab Break",
+   "label": "SPRF"
+  },
+  {
+   "fieldname": "business_partner_details_section",
+   "fieldtype": "Section Break",
+   "label": "Business Partner Details"
+  },
+  {
+   "fieldname": "business_partner_name",
+   "fieldtype": "Data",
+   "label": "Business Partner Name"
+  },
+  {
+   "fieldname": "business_partner_contact_person",
+   "fieldtype": "Data",
+   "label": "Business Partner Contact Person"
+  },
+  {
+   "fieldname": "business_partner_contact_number",
+   "fieldtype": "Data",
+   "label": "Business Partner Contact Number"
+  },
+  {
+   "fieldname": "country",
+   "fieldtype": "Link",
+   "label": "Country",
+   "options": "Country"
+  },
+  {
+   "fieldname": "region",
+   "fieldtype": "Data",
+   "label": "Region"
+  },
+  {
+   "fieldname": "projectend_user_complete_details_section",
+   "fieldtype": "Section Break",
+   "label": "Project/End User Complete Details"
+  },
+  {
+   "fieldname": "end_user_name",
+   "fieldtype": "Data",
+   "label": "End User Name"
+  },
+  {
+   "fieldname": "contact_name",
+   "fieldtype": "Data",
+   "label": "Contact Name"
+  },
+  {
+   "fieldname": "phone_number",
+   "fieldtype": "Data",
+   "label": "Phone Number"
+  },
+  {
+   "fieldname": "email_enduser",
+   "fieldtype": "Data",
+   "label": "Email"
+  },
+  {
+   "fieldname": "other_details_section",
+   "fieldtype": "Section Break",
+   "label": "Other Details"
+  },
+  {
+   "fieldname": "project_name",
+   "fieldtype": "Data",
+   "label": "Project Name"
+  },
+  {
+   "fieldname": "deal_value_in_local_currency",
+   "fieldtype": "Data",
+   "label": "Deal Value in Local Currency"
+  },
+  {
+   "fieldname": "tenderproject",
+   "fieldtype": "Data",
+   "label": "Tender/Project"
+  },
+  {
+   "fieldname": "closing_date",
+   "fieldtype": "Date",
+   "label": "Closing Date"
+  },
+  {
+   "fieldname": "probability_of_winning",
+   "fieldtype": "Data",
+   "label": "Probability of winning"
+  },
+  {
+   "fieldname": "competitors",
+   "fieldtype": "Data",
+   "label": "Competitors"
+  },
+  {
+   "fieldname": "section_break_ombb",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "justification_for_special_price_request",
+   "fieldtype": "Small Text",
+   "label": "Justification for special price request"
+  },
+  {
+   "fieldname": "column_break_eeeo",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_aqjt",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_eshf",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "business_partner_tab",
+   "fieldtype": "Tab Break",
+   "label": "Business Partner"
+  },
+  {
+   "fieldname": "special_discount",
+   "fieldtype": "Percent",
+   "label": " Special Discount "
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-05-12 12:30:55.415282",
+ "modified": "2025-06-16 13:16:02.039009",
  "modified_by": "Administrator",
  "module": "FCRM",
  "name": "CRM Deal",

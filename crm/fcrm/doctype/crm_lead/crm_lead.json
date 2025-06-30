@@ -2,7 +2,7 @@
  "actions": [],
  "allow_import": 1,
  "allow_rename": 1,
- "autoname": "naming_series:",
+ "autoname": "field:organization",
  "creation": "2023-07-24 12:19:39.616298",
  "default_view": "List",
  "doctype": "DocType",
@@ -18,12 +18,16 @@
   "job_title",
   "source",
   "lead_owner",
+  "branch",
+  "executive",
+  "business_partner",
   "person_tab",
   "salutation",
   "first_name",
   "last_name",
   "email",
   "mobile_no",
+  "contacts",
   "organization_tab",
   "section_break_uixv",
   "naming_series",
@@ -37,6 +41,7 @@
   "annual_revenue",
   "image",
   "converted",
+  "currency",
   "products_tab",
   "products",
   "section_break_ggwh",
@@ -55,7 +60,11 @@
   "first_response_time",
   "first_responded_on",
   "log_tab",
-  "status_change_log"
+  "status_change_log",
+  "meeting_tab",
+  "meeting",
+  "tasks_section",
+  "table_hgty"
  ],
  "fields": [
   {
@@ -108,7 +117,7 @@
    "fieldtype": "Data",
    "label": "Email",
    "options": "Email",
-   "search_index": 1
+   "reqd": 1
   },
   {
    "fieldname": "website",
@@ -119,7 +128,8 @@
    "fieldname": "mobile_no",
    "fieldtype": "Data",
    "label": "Mobile No",
-   "options": "Phone"
+   "options": "Phone",
+   "reqd": 1
   },
   {
    "fieldname": "phone",
@@ -191,15 +201,9 @@
   {
    "fieldname": "organization",
    "fieldtype": "Data",
-   "label": "Organization"
-  },
-  {
-   "default": "0",
-   "fieldname": "converted",
-   "fieldtype": "Check",
-   "in_list_view": 1,
-   "in_standard_filter": 1,
-   "label": "Converted"
+   "label": "Organization",
+   "reqd": 1,
+   "unique": 1
   },
   {
    "fieldname": "person_tab",
@@ -325,17 +329,80 @@
    "label": "Net Total",
    "options": "currency",
    "read_only": 1
+  },
+  {
+   "fieldname": "branch",
+   "fieldtype": "Link",
+   "label": "Branch",
+   "options": "Branches",
+   "reqd": 1
+  },
+  {
+   "fieldname": "executive",
+   "fieldtype": "Link",
+   "label": "Executive",
+   "options": "Executive",
+   "reqd": 1
+  },
+  {
+   "fieldname": "business_partner",
+   "fieldtype": "Link",
+   "label": "Business Partner",
+   "options": "Business Partner"
+  },
+  {
+   "default": "0",
+   "fieldname": "converted",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Converted"
+  },
+  {
+   "fieldname": "contacts",
+   "fieldtype": "Table",
+   "label": "Contacts",
+   "options": "CRM Contacts"
+  },
+  {
+   "default": "USD",
+   "fieldname": "currency",
+   "fieldtype": "Link",
+   "label": "Currency",
+   "options": "Currency",
+   "reqd": 1
+  },
+  {
+   "fieldname": "meeting_tab",
+   "fieldtype": "Tab Break",
+   "label": "meeting"
+  },
+  {
+   "fieldname": "meeting",
+   "fieldtype": "Table",
+   "label": "Meeting",
+   "options": "CRM Meeting Lead"
+  },
+  {
+   "fieldname": "table_hgty",
+   "fieldtype": "Table",
+   "options": "Meeting task"
+  },
+  {
+   "fieldname": "tasks_section",
+   "fieldtype": "Section Break",
+   "label": "Tasks"
   }
  ],
  "grid_page_length": 50,
  "image_field": "image",
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-05-14 19:51:06.184569",
+ "modified": "2025-06-19 12:20:44.399129",
  "modified_by": "Administrator",
  "module": "FCRM",
  "name": "CRM Lead",
- "naming_rule": "By \"Naming Series\" field",
+ "naming_rule": "By fieldname",
  "owner": "Administrator",
  "permissions": [
   {
@@ -379,6 +446,6 @@
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
- "title_field": "lead_name",
+ "title_field": "organization",
  "track_changes": 1
 }

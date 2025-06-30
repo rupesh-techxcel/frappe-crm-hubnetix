@@ -70,3 +70,27 @@ frappe.ui.form.on("CRM Products", {
 		frm.trigger("update_total");
 	}
 });
+frappe.ui.form.on('CRM Lead', {
+    refresh: function(frm) {
+        frm.set_query('executive', function() {
+            return {
+                filters: {
+     
+                    'branch': frm.doc.branch
+                }
+            };
+        });
+    }
+});
+frappe.ui.form.on('CRM Lead', {
+    refresh: function(frm) {
+        frm.set_query('business_partner', function() {
+            return {
+                filters: {
+     
+                    'branch': frm.doc.branch
+                }
+            };
+        });
+    }
+});

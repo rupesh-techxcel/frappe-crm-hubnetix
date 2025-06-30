@@ -109,6 +109,7 @@ const lead = reactive({
   industry: '',
   status: '',
   lead_owner: '',
+  Currency:'USD',
 })
 
 const createLead = createResource({
@@ -196,6 +197,9 @@ function openQuickEntryModal() {
 
 onMounted(() => {
   Object.assign(lead, props.defaults)
+    if (!lead.currency) {
+    lead.currency = 'USD'
+  }
   if (!lead.lead_owner) {
     lead.lead_owner = getUser().name
   }
